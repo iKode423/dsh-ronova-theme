@@ -696,6 +696,37 @@ html[data-ronova-stickers="off"] .ronova-working {
   .ronova-seg button, .ronova-reset { transition: none; }
 }
 
+/* ---- Falling feathers: a frame-wide, non-interactive overlay ---- */
+.ronova-feathers {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.ronova-feather {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  pointer-events: none;
+}
+.ronova-feather svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ronova-feather-body { fill: #241016; }
+.ronova-feather-shaft { stroke: rgba(190, 140, 71, .5); stroke-width: .7; fill: none; }
+.ronova-feather-rim { fill: none; stroke: rgba(190, 140, 71, .38); stroke-width: .6; }
+body[data-ds-dark-theme] .ronova-feather-body { fill: #0A0406; }
+body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(190, 140, 71, .46); }
+body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .32); }
+
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],
 [data-chat-flow-kind="user"] {
@@ -714,22 +745,41 @@ html[data-ronova-stickers="off"] .ronova-working {
     background-size: cover;
     background-repeat: no-repeat;
     box-shadow: 0 0 0 1px rgba(190, 140, 71, .42), 0 12px 26px -14px rgba(143, 19, 31, .9);
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: default;
+    transform-origin: 50% 60%;
+    transition: box-shadow .2s ease;
   }
   [data-chat-flow-kind="assistant-step"]::before {
+    --ronova-avatar-tilt: -3deg;
     left: -78px;
     background-image: url("${STICKER_FLAME}");
-    transform: rotate(-3deg);
+    transform: rotate(var(--ronova-avatar-tilt));
   }
   [data-chat-flow-kind="assistant-step"]:nth-child(2n)::before {
+    --ronova-avatar-tilt: 2deg;
     background-image: url("${STICKER_GOLD}");
-    transform: rotate(2deg);
   }
   [data-chat-flow-kind="user"]::after {
+    --ronova-avatar-tilt: 3deg;
     right: -78px;
     background-image: var(--ronova-user-avatar, url("${STICKER_GOLD}"));
-    transform: rotate(3deg);
+    transform: rotate(var(--ronova-avatar-tilt));
   }
+}
+
+@media (min-width: 1200px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  [data-chat-flow-kind="assistant-step"]:hover::before,
+  [data-chat-flow-kind="user"]:hover::after {
+    animation: ronova-avatar-swim 1.6s ease-in-out infinite;
+    box-shadow: 0 0 0 1px rgba(190, 140, 71, .58), 0 16px 32px -16px rgba(143, 19, 31, .95), 0 0 28px rgba(196, 23, 43, .26);
+  }
+}
+
+@keyframes ronova-avatar-swim {
+  0%, 100% { transform: rotate(var(--ronova-avatar-tilt, -3deg)) translate(0, 0); }
+  35% { transform: rotate(calc(var(--ronova-avatar-tilt, -3deg) - 4deg)) translate(-.4px, -.9px); }
+  70% { transform: rotate(calc(var(--ronova-avatar-tilt, -3deg) + 1.6deg)) translate(.3px, .2px); }
 }
 `;
 
@@ -796,17 +846,19 @@ html[data-ronova-stickers="off"] .ronova-working {
     }
 
     const SETTINGS_KEY = 'ronova.settings.v1';
-    const SETTINGS_DEFAULTS = { wash: 1, stickers: 'on' };
+    const SETTINGS_DEFAULTS = { wash: 1, stickers: 'on', feathers: 26 };
+    const settingsListeners = new Set();
 
     function readSettings() {
       try {
         const raw = JSON.parse(window.localStorage.getItem(SETTINGS_KEY) || '{}');
         return {
           wash: Number(raw.wash) > 0 ? Number(raw.wash) : SETTINGS_DEFAULTS.wash,
-          stickers: raw.stickers === 'off' ? 'off' : 'on'
+          stickers: raw.stickers === 'off' ? 'off' : 'on',
+          feathers: Number.isFinite(Number(raw.feathers)) ? Math.max(0, Number(raw.feathers)) : SETTINGS_DEFAULTS.feathers
         };
       } catch (error) {
-        return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers };
+        return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers, feathers: SETTINGS_DEFAULTS.feathers };
       }
     }
 
@@ -815,6 +867,18 @@ html[data-ronova-stickers="off"] .ronova-working {
       root.style.setProperty('--ronova-wash', String(next.wash));
       if (next.stickers === 'off') root.setAttribute('data-ronova-stickers', 'off');
       else root.removeAttribute('data-ronova-stickers');
+      settingsListeners.forEach((notify) => {
+        try {
+          notify(next);
+        } catch (error) {
+          // A listener must never break the settings write.
+        }
+      });
+    }
+
+    function subscribeSettings(notify) {
+      settingsListeners.add(notify);
+      return () => settingsListeners.delete(notify);
     }
 
     function saveSettings(next) {
@@ -826,7 +890,7 @@ html[data-ronova-stickers="off"] .ronova-working {
     }
 
     function DefaultSettings() {
-      return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers };
+      return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers, feathers: SETTINGS_DEFAULTS.feathers };
     }
 
     const WASH_OPTIONS = [
@@ -841,6 +905,12 @@ html[data-ronova-stickers="off"] .ronova-working {
     const MODE_OPTIONS = [
       { value: 'light', label: '浅色' },
       { value: 'dark', label: '深色' }
+    ];
+    const FEATHER_OPTIONS = [
+      { value: 0, label: '关' },
+      { value: 14, label: '少' },
+      { value: 26, label: '标准' },
+      { value: 42, label: '多' }
     ];
 
     function Segment(props) {
@@ -897,6 +967,13 @@ html[data-ronova-stickers="off"] .ronova-working {
           ),
           h(Segment, { label: '明暗', value: mode, options: MODE_OPTIONS, onChange: pickTheme })
         ),
+        h('div', { className: 'ronova-settings-row' },
+          h('div', null,
+            h('div', { className: 'ronova-settings-label' }, '飘落羽毛'),
+            h('div', { className: 'ronova-settings-hint' }, '全窗口飘落的黑色羽毛密度')
+          ),
+          h(Segment, { label: '飘落羽毛', value: settings.feathers, options: FEATHER_OPTIONS, onChange: (value) => update({ feathers: value }) })
+        ),
         h('div', { className: 'ronova-settings-foot' },
           h('button', {
             type: 'button',
@@ -905,6 +982,145 @@ html[data-ronova-stickers="off"] .ronova-working {
           }, '恢复默认')
         )
       );
+    }
+
+    const FEATHER_SHAPES = {
+      long: {
+        viewBox: '0 0 44 96',
+        ratio: 0.46,
+        markup: '<path class="ronova-feather-body" d="M22 2C30 14 38 30 36 50C35 66 29 82 22 94C15 82 9 66 8 50C6 30 14 14 22 2Z"/>'
+          + '<path class="ronova-feather-shaft" d="M22 7L22 90"/>'
+          + '<path class="ronova-feather-rim" d="M22 2C30 14 38 30 36 50C35 66 29 82 22 94C15 82 9 66 8 50C6 30 14 14 22 2Z"/>'
+      },
+      down: {
+        viewBox: '0 0 26 50',
+        ratio: 0.52,
+        markup: '<path class="ronova-feather-body" d="M13 2C18 9 22 17 21 27C20 35 16 43 13 48C10 43 6 35 5 27C4 17 8 9 13 2Z"/>'
+          + '<path class="ronova-feather-shaft" d="M13 6L13 44"/>'
+          + '<path class="ronova-feather-rim" d="M13 2C18 9 22 17 21 27C20 35 16 43 13 48C10 43 6 35 5 27C4 17 8 9 13 2Z"/>'
+      }
+    };
+
+    function FeatherLayer() {
+      const hostRef = React.useRef(null);
+      const [density, setDensity] = React.useState(() => readSettings().feathers);
+
+      React.useEffect(() => subscribeSettings((next) => setDensity(next.feathers)), []);
+
+      React.useEffect(() => {
+        const host = hostRef.current;
+        if (!host) return undefined;
+        while (host.firstChild) host.removeChild(host.firstChild);
+
+        const count = Math.max(0, Math.min(90, Number(density) || 0));
+        if (!count) return undefined;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        const parts = [];
+
+        const makeSvg = (shape) => {
+          const spec = FEATHER_SHAPES[shape];
+          const svg = document.createElementNS(SVG_NS, 'svg');
+          svg.setAttribute('viewBox', spec.viewBox);
+          svg.setAttribute('aria-hidden', 'true');
+          svg.innerHTML = spec.markup;
+          return svg;
+        };
+
+        const spawn = (part, initial) => {
+          const roll = Math.random();
+          const size = roll < 0.5 ? 12 + Math.random() * 8
+            : roll < 0.86 ? 20 + Math.random() * 12
+              : 40 + Math.random() * 16;
+          const shape = size < 22 ? 'down' : 'long';
+          const spec = FEATHER_SHAPES[shape];
+          const opacity = size < 22 ? 0.10 + Math.random() * 0.05
+            : size < 36 ? 0.14 + Math.random() * 0.04
+              : 0.19 + Math.random() * 0.05;
+
+          part.el.style.width = Math.round(size * spec.ratio) + 'px';
+          part.el.style.height = Math.round(size) + 'px';
+          part.el.style.opacity = opacity.toFixed(2);
+          part.el.style.filter = size < 16 ? 'blur(.5px)' : 'none';
+          part.el.replaceChildren(makeSvg(shape));
+
+          part.baseX = Math.random() * (width + 160) - 80;
+          part.y = initial ? Math.random() * (height + 120) - 60 : -80 - Math.random() * 140;
+          part.speed = 14 + size * 0.34 + Math.random() * 10;
+          part.amp = 8 + Math.random() * 26;
+          part.freq = 0.06 + Math.random() * 0.16;
+          part.phase = Math.random() * Math.PI * 2;
+          part.rot = Math.random() * 360;
+          part.spin = (Math.random() - 0.5) * 46;
+          part.flip = Math.random() * 360;
+          part.flipSpeed = 26 + Math.random() * 110;
+          part.drift = 6 + Math.random() * 22;
+          part.x = part.baseX;
+        };
+
+        for (let index = 0; index < count; index += 1) {
+          const el = document.createElement('span');
+          el.className = 'ronova-feather';
+          host.appendChild(el);
+          const part = { el };
+          spawn(part, true);
+          parts.push(part);
+        }
+
+        let raf = 0;
+        let last = performance.now();
+        let windPhase = 0;
+
+        const frame = (now) => {
+          const dt = Math.min(0.05, (now - last) / 1000);
+          last = now;
+          windPhase += dt;
+          const wind = Math.sin(windPhase * 0.32) * 0.9 + Math.sin(windPhase * 0.11 + 1.7) * 0.5;
+          for (let index = 0; index < parts.length; index += 1) {
+            const part = parts[index];
+            part.y += part.speed * dt;
+            part.phase += part.freq * dt * Math.PI * 2;
+            part.baseX += wind * part.drift * dt;
+            if (part.baseX > width + 120) part.baseX = -100;
+            if (part.baseX < -120) part.baseX = width + 100;
+            part.x = part.baseX + Math.sin(part.phase) * part.amp;
+            part.rot += part.spin * dt;
+            part.flip += part.flipSpeed * dt;
+            if (part.y > height + 80) spawn(part, false);
+            part.el.style.transform = 'translate3d(' + part.x.toFixed(1) + 'px,' + part.y.toFixed(1) + 'px,0) rotate(' + part.rot.toFixed(1) + 'deg) rotateY(' + part.flip.toFixed(1) + 'deg)';
+          }
+          raf = window.requestAnimationFrame(frame);
+        };
+        raf = window.requestAnimationFrame(frame);
+
+        const onResize = () => {
+          width = window.innerWidth;
+          height = window.innerHeight;
+        };
+        const onVisibility = () => {
+          if (document.hidden) {
+            if (raf) window.cancelAnimationFrame(raf);
+            raf = 0;
+          } else if (!raf) {
+            last = performance.now();
+            raf = window.requestAnimationFrame(frame);
+          }
+        };
+        window.addEventListener('resize', onResize);
+        document.addEventListener('visibilitychange', onVisibility);
+
+        return () => {
+          if (raf) window.cancelAnimationFrame(raf);
+          window.removeEventListener('resize', onResize);
+          document.removeEventListener('visibilitychange', onVisibility);
+          while (host.firstChild) host.removeChild(host.firstChild);
+        };
+      }, [density]);
+
+      return h('div', { className: 'ronova-feathers', ref: hostRef, 'aria-hidden': 'true' });
     }
 
     function HeroMark(props) {
@@ -1053,6 +1269,12 @@ html[data-ronova-stickers="off"] .ronova-working {
           order: 12,
           label: () => '若娜瓦'
         }, RonovaSettings));
+
+        safeInject('shell.overlay', () => ctx.slots.register({
+          name: 'shell.overlay',
+          id: 'ronova.feathers',
+          order: 0
+        }, FeatherLayer));
 
         safeInject('conversation.composer.dock', () => ctx.slots.register({
           name: 'conversation.composer.dock',

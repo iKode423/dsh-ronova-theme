@@ -72,11 +72,23 @@
       name: '@local/ronova'
 ```
 
-推荐流程：
+`@local/ronova` 是本地开发时用的包名，**没有发布到 npm**，在注册表里搜不到。安装请走 GitHub 仓库或本地目录。
 
-1. 打开 Harness 的「插件」页，安装本包（本地目录或 npm 源均可）
+推荐流程（GitHub）：
+
+1. 打开 Harness 的「插件」页，在安装框里填仓库地址：`github:iKode423/dsh-ronova-theme`
 2. 确认插件列表里出现「若娜瓦主题」
 3. 刷新页面，主题生效
+
+也接受这些写法：
+
+- 本地目录：填绝对路径，例如 `/Users/you/code/ronova`
+- 完整 URL：`https://github.com/iKode423/dsh-ronova-theme`
+- 分支、标签或提交：在仓库地址后加 `#`，例如 `github:iKode423/dsh-ronova-theme#main`
+
+**更新**：从 GitHub 安装拿到的是某个提交的快照，不是版本范围，仓库 HEAD 前进不会自动跟随。升级时先在插件页卸载，再用同样的地址重装，然后刷新页面。
+
+**网络**：安装前 DSH 会先用 `git ls-remote` 探一次 GitHub（超时 5 秒），因此本机需要有 `git` 且能连上 github.com 与 codeload.github.com。连不上会直接失败并标记 `failedAt: 'spec-host'`，与包名、scope 无关。
 
 手动方式（开发时常用）：
 
@@ -84,7 +96,7 @@
 2. 在 profile 的 Cordis 配置里加入上面的 `insert`
 3. 重启 Harness 或刷新 Web UI
 
-插件依赖三个客户端包：`dsh-client-ui-theme`、`dsh-client-ui-sidebar`、`dsh-client-ui-conversation`，它们在 `package.json` 的 `dsh.client.inject` 中声明，缺失时插件不会加载。
+插件依赖三个客户端包：`@deepseek-ai/dsh-client-ui-theme`、`@deepseek-ai/dsh-client-ui-sidebar`、`@deepseek-ai/dsh-client-ui-conversation`，它们在 `package.json` 的 `dsh.client.inject` 中声明，缺失时插件不会加载。
 
 ## 使用上的几个注意点
 

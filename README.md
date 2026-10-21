@@ -10,13 +10,13 @@
 
 | 深色 · 新对话 | 深色 · 对话 |
 | :---: | :---: |
-| ![深色主题的新对话页](docs/preview/preview-dark-new-chat.jpg) | ![深色主题的对话页](docs/preview/preview-dark-chat.jpg) |
+| ![深色主题的新对话页](docs/preview/preview-dark-new-chat.webp) | ![深色主题的对话页](docs/preview/preview-dark-chat.webp) |
 
 | 浅色 · 新对话 | 浅色 · 对话 |
 | :---: | :---: |
-| ![浅色主题的新对话页](docs/preview/preview-light-new-chat.jpg) | ![浅色主题的对话页](docs/preview/preview-light-chat.jpg) |
+| ![浅色主题的新对话页](docs/preview/preview-light-new-chat.webp) | ![浅色主题的对话页](docs/preview/preview-light-chat.webp) |
 
-截图取自 2462×1702 的原始界面，仓库里存放的是 1600px 宽、质量 86 的版本（合计约 440 KB）。
+截图取自 2462×1702 的原始界面，仓库里存放的是 1600px 宽、WebP 质量 82 的版本（合计约 220 KB）。
 
 ---
 

@@ -595,7 +595,7 @@ body[data-ds-dark-theme] .yhfFVG_add:hover {
   text-indent: .22em;
   white-space: nowrap;
 }
-html[data-ronova-stickers="off"] [data-chat-flow-kind="assistant-step"]::before,
+html[data-ronova-stickers="off"] [data-ronova-gutter="assistant"]::before,
 html[data-ronova-stickers="off"] [data-chat-flow-kind="user"]::after {
   content: none !important;
 }
@@ -706,12 +706,14 @@ html[data-ronova-stickers="off"] .ronova-working {
   .ronova-seg button, .ronova-reset { transition: none; }
 }
 
-/* ---- User message bubble: warm wine-tinted surface instead of neutral grey ---- */
-[data-chat-flow-kind="user"] [class*="bubble"] {
+/* ---- User and steering bubbles: warm wine surface instead of neutral grey.
+   A mid-turn message is a steering flow item (and briefly a pending echo with
+   data-pending-steering), so it needs the same surface as a normal user row. ---- */
+:is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"], [data-pending-steering], [data-submission-echo]) [class*="bubble"] {
   background: #F6E4E0 !important;
   box-shadow: 0 6px 18px -16px rgba(90, 20, 30, .45) !important;
 }
-body[data-ds-dark-theme] [data-chat-flow-kind="user"] [class*="bubble"] {
+body[data-ds-dark-theme] :is([data-chat-flow-kind="user"], [data-chat-flow-kind="steering"], [data-pending-steering], [data-submission-echo]) [class*="bubble"] {
   background: #2A181C !important;
   box-shadow: 0 8px 22px -18px rgba(0, 0, 0, .9) !important;
 }
@@ -758,13 +760,21 @@ body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(224, 86, 102, .5);
 body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(196, 23, 43, .6); }
 body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
 
-/* Stickers in the gutters: assistant on the left, the account avatar on the right. */
+/* Stickers in the gutters: assistant on the left, the account avatar on the right.
+   The Client half tags tall assistant steps and tall process groups, so short tool
+   rows stay bare while consecutive cards keep at least 60px of room. The cards exist
+   on every potential anchor but stay transparent, so expanding or folding a group
+   fades and scales them instead of popping. */
 [data-chat-flow-kind="assistant-step"],
 [data-chat-flow-kind="user"] {
   position: relative;
 }
 @media (min-width: 1200px) {
+  [data-chat-group-key] {
+    position: relative;
+  }
   [data-chat-flow-kind="assistant-step"]::before,
+  [data-chat-group-key]::before,
   [data-chat-flow-kind="user"]::after {
     content: "";
     position: absolute;
@@ -776,18 +786,20 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
     background-size: cover;
     background-repeat: no-repeat;
     box-shadow: 0 0 0 1px rgba(190, 140, 71, .42), 0 12px 26px -14px rgba(143, 19, 31, .9);
-    pointer-events: auto;
-    cursor: default;
+    opacity: 0;
+    transform: rotate(var(--ronova-avatar-tilt, -3deg)) scale(.82) translateY(4px);
     transform-origin: 50% 60%;
-    transition: box-shadow .2s ease;
+    transition: opacity .18s ease, transform .22s cubic-bezier(.22, .75, .3, 1), box-shadow .2s ease;
+    pointer-events: none;
+    cursor: default;
   }
-  [data-chat-flow-kind="assistant-step"]::before {
+  [data-chat-flow-kind="assistant-step"]::before,
+  [data-chat-group-key]::before {
     --ronova-avatar-tilt: -3deg;
     left: -78px;
     background-image: url("${STICKER_FLAME}");
-    transform: rotate(var(--ronova-avatar-tilt));
   }
-  [data-chat-flow-kind="assistant-step"]:nth-child(2n)::before {
+  :is([data-chat-flow-kind="assistant-step"], [data-chat-group-key]):nth-child(2n)::before {
     --ronova-avatar-tilt: 2deg;
     background-image: url("${STICKER_GOLD}");
   }
@@ -795,12 +807,27 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
     --ronova-avatar-tilt: 3deg;
     right: -78px;
     background-image: var(--ronova-user-avatar, url("${STICKER_GOLD}"));
-    transform: rotate(var(--ronova-avatar-tilt));
+    opacity: 1;
+    transform: rotate(var(--ronova-avatar-tilt)) scale(1) translateY(0);
+    pointer-events: auto;
+  }
+  [data-ronova-gutter="assistant"]::before {
+    opacity: 1;
+    transform: rotate(var(--ronova-avatar-tilt)) scale(1) translateY(0);
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-chat-flow-kind="assistant-step"]::before,
+  [data-chat-group-key]::before,
+  [data-chat-flow-kind="user"]::after {
+    transition: none;
   }
 }
 
 @media (min-width: 1200px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-  [data-chat-flow-kind="assistant-step"]:hover::before,
+  [data-ronova-gutter="assistant"]:hover::before,
   [data-chat-flow-kind="user"]:hover::after {
     animation: ronova-avatar-swim 1.6s ease-in-out infinite;
     box-shadow: 0 0 0 1px rgba(190, 140, 71, .58), 0 16px 32px -16px rgba(143, 19, 31, .95), 0 0 28px rgba(196, 23, 43, .26);
@@ -851,6 +878,45 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
       }
     }
 
+    const GUTTER_ATTR = 'data-ronova-gutter';
+    const GUTTER_MIN_HEIGHT = 60;
+
+    /* A 60px card needs a 60px-tall block; hanging one on a 30px tool row is what
+       made consecutive steps stack. Tag tall answer steps and tall process groups
+       (the 思考/读取 block while it runs), and skip the short rows inside a group so
+       the group card cannot collide with a row card. The 6px flow gap absorbs the
+       few extra pixels the tilt adds to each card. */
+    function assistantGutterAnchors() {
+      const picks = [];
+      const nodes = document.querySelectorAll('[data-chat-flow-kind="assistant-step"], [data-chat-group-key]');
+      for (const node of nodes) {
+        if (node.closest('[data-step-process-content]')) continue;
+        const box = node.getBoundingClientRect();
+        if (box.width < 1 || box.height < GUTTER_MIN_HEIGHT) continue;
+        picks.push(node);
+      }
+      return picks;
+    }
+
+    function syncAssistantGutters(tagged) {
+      const picks = assistantGutterAnchors();
+      const keep = new Set(picks);
+      for (const node of tagged) {
+        if (!node.isConnected) {
+          tagged.delete(node);
+          continue;
+        }
+        if (!keep.has(node)) {
+          node.removeAttribute(GUTTER_ATTR);
+          tagged.delete(node);
+        }
+      }
+      for (const node of picks) {
+        if (node.getAttribute(GUTTER_ATTR) !== 'assistant') node.setAttribute(GUTTER_ATTR, 'assistant');
+        tagged.add(node);
+      }
+    }
+
     function Styles() {
       React.useEffect(() => {
         const root = document.documentElement;
@@ -871,6 +937,61 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
         return () => {
           window.clearInterval(timer);
           root.style.removeProperty('--ronova-user-avatar');
+        };
+      }, []);
+      React.useEffect(() => {
+        const tagged = new Set();
+        let timer = 0;
+        const run = () => {
+          timer = 0;
+          try {
+            syncAssistantGutters(tagged);
+          } catch (error) {
+            // Marking is decorative; never let it break the transcript.
+          }
+        };
+        const schedule = () => {
+          if (timer === 0) timer = window.setTimeout(run, 120);
+        };
+        let frame = 0;
+        const syncNow = () => {
+          if (frame !== 0) return;
+          frame = window.requestAnimationFrame(() => {
+            frame = 0;
+            if (timer !== 0) {
+              window.clearTimeout(timer);
+              timer = 0;
+            }
+            run();
+          });
+        };
+        run();
+        const observer = new MutationObserver((records) => {
+          // Expand/collapse flips classes or hidden attributes: sync on the next
+          // frame so the card starts fading with the group, not 120ms later.
+          // Streaming text only changes height, so it can wait for the throttle.
+          for (const record of records) {
+            if (record.type === 'attributes') {
+              syncNow();
+              return;
+            }
+          }
+          schedule();
+        });
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+          attributes: true,
+          attributeFilter: ['class', 'hidden', 'data-turn-process-hidden', 'data-group-expanded-mode']
+        });
+        window.addEventListener('resize', schedule);
+        return () => {
+          observer.disconnect();
+          window.removeEventListener('resize', schedule);
+          if (frame !== 0) window.cancelAnimationFrame(frame);
+          if (timer !== 0) window.clearTimeout(timer);
+          for (const node of tagged) node.removeAttribute(GUTTER_ATTR);
         };
       }, []);
       return h('style', { 'data-ronova': 'skin', dangerouslySetInnerHTML: { __html: CSS } });

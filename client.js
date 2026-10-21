@@ -732,8 +732,8 @@ body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .36; }
 .ronova-feather-halo { fill: none; stroke: rgba(190, 140, 71, .10); stroke-width: 18; }
 body[data-ds-dark-theme] .ronova-feather-body { fill: #1A0E12; }
 body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(214, 170, 110, .6); }
-body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(214, 170, 110, .55); }
-body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .16); }
+body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(214, 170, 110, .62); }
+body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .22); }
 
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],
@@ -1006,7 +1006,7 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .16);
       const bow = (rnd() - 0.5) * 24;
       const spine = (t) => baseX + Math.sin(t * Math.PI) * bow + t * lean;
       const notchAt = 0.16 + rnd() * 0.12;
-      const widthAt = (t) => Math.pow(Math.sin(Math.pow(t, 0.9) * Math.PI), 0.9) * (44 + rnd() * 8);
+      const widthAt = (t) => Math.pow(Math.sin(Math.pow(t, 0.9) * Math.PI), 0.9) * (50 + rnd() * 9);
       const steps = 22;
       const right = [];
       const left = [];
@@ -1082,9 +1082,9 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .16);
 
         const spawn = (part, initial) => {
           const roll = Math.random();
-          const size = roll < 0.5 ? 12 + Math.random() * 8
-            : roll < 0.86 ? 20 + Math.random() * 12
-              : 40 + Math.random() * 16;
+          const size = roll < 0.5 ? 15 + Math.random() * 8
+            : roll < 0.86 ? 23 + Math.random() * 13
+              : 38 + Math.random() * 20;
           const variant = FEATHER_VARIANTS[(Math.random() * FEATHER_VARIANTS.length) | 0];
 
           part.el.style.width = Math.round(size * variant.ratio) + 'px';

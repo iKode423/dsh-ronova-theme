@@ -720,20 +720,20 @@ html[data-ronova-stickers="off"] .ronova-working {
   height: 100%;
   overflow: visible;
 }
-.ronova-feather[data-depth="far"] { opacity: .13; }
-.ronova-feather[data-depth="mid"] { opacity: .18; }
-.ronova-feather[data-depth="near"] { opacity: .26; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="far"] { opacity: .20; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="mid"] { opacity: .27; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .36; }
-.ronova-feather-body { fill: #201014; }
-.ronova-feather-shaft { fill: none; stroke: rgba(190, 140, 71, .5); stroke-width: 5; stroke-linecap: round; }
-.ronova-feather-rim { fill: none; stroke: rgba(190, 140, 71, .42); stroke-width: 7; stroke-linejoin: round; }
-.ronova-feather-halo { fill: none; stroke: rgba(190, 140, 71, .10); stroke-width: 18; }
-body[data-ds-dark-theme] .ronova-feather-body { fill: #1A0E12; }
-body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(214, 170, 110, .6); }
-body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(214, 170, 110, .62); }
-body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .22); }
+.ronova-feather[data-depth="far"] { opacity: .18; }
+.ronova-feather[data-depth="mid"] { opacity: .24; }
+.ronova-feather[data-depth="near"] { opacity: .34; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="far"] { opacity: .24; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="mid"] { opacity: .32; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .42; }
+.ronova-feather-body { fill: #1B0B10; }
+.ronova-feather-shaft { fill: none; stroke: rgba(196, 23, 43, .42); stroke-width: 5; stroke-linecap: round; }
+.ronova-feather-rim { fill: none; stroke: rgba(143, 19, 31, .55); stroke-width: 7; stroke-linejoin: round; }
+.ronova-feather-halo { fill: none; stroke: rgba(164, 20, 34, .16); stroke-width: 18; }
+body[data-ds-dark-theme] .ronova-feather-body { fill: #170A0E; }
+body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(224, 86, 102, .5); }
+body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(196, 23, 43, .6); }
+body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
 
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],

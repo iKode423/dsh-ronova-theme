@@ -724,8 +724,8 @@ html[data-ronova-stickers="off"] .ronova-working {
 .ronova-feather-shaft { stroke: rgba(190, 140, 71, .5); stroke-width: .7; fill: none; }
 .ronova-feather-rim { fill: none; stroke: rgba(190, 140, 71, .38); stroke-width: .6; }
 body[data-ds-dark-theme] .ronova-feather-body { fill: #0A0406; }
-body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(190, 140, 71, .46); }
-body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .32); }
+body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(190, 140, 71, .52); }
+body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); }
 
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],
@@ -1037,9 +1037,9 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .32); 
               : 40 + Math.random() * 16;
           const shape = size < 22 ? 'down' : 'long';
           const spec = FEATHER_SHAPES[shape];
-          const opacity = size < 22 ? 0.10 + Math.random() * 0.05
-            : size < 36 ? 0.14 + Math.random() * 0.04
-              : 0.19 + Math.random() * 0.05;
+          const opacity = size < 22 ? 0.13 + Math.random() * 0.05
+            : size < 36 ? 0.18 + Math.random() * 0.05
+              : 0.24 + Math.random() * 0.06;
 
           part.el.style.width = Math.round(size * spec.ratio) + 'px';
           part.el.style.height = Math.round(size) + 'px';

@@ -720,16 +720,19 @@ html[data-ronova-stickers="off"] .ronova-working {
   height: 100%;
   overflow: visible;
 }
-.ronova-feather[data-depth="far"] { opacity: .18; }
-.ronova-feather[data-depth="mid"] { opacity: .24; }
-.ronova-feather[data-depth="near"] { opacity: .34; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="far"] { opacity: .24; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="mid"] { opacity: .32; }
-body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .42; }
+.ronova-feather { mix-blend-mode: multiply; }
+.ronova-feather[data-depth="far"] { opacity: .52; }
+.ronova-feather[data-depth="mid"] { opacity: .64; }
+.ronova-feather[data-depth="near"] { opacity: .74; }
+body[data-ds-dark-theme] .ronova-feather { mix-blend-mode: normal; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="far"] { opacity: .32; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="mid"] { opacity: .40; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .48; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="far"] .ronova-feather-body { fill: #23121A; }
 .ronova-feather-body { fill: #1B0B10; }
-.ronova-feather-shaft { fill: none; stroke: rgba(196, 23, 43, .42); stroke-width: 5; stroke-linecap: round; }
-.ronova-feather-rim { fill: none; stroke: rgba(143, 19, 31, .55); stroke-width: 7; stroke-linejoin: round; }
-.ronova-feather-halo { fill: none; stroke: rgba(164, 20, 34, .16); stroke-width: 18; }
+.ronova-feather-shaft { fill: none; stroke: rgba(196, 23, 43, .42); stroke-width: var(--ronova-shaft-w, 5); stroke-linecap: round; }
+.ronova-feather-rim { fill: none; stroke: rgba(143, 19, 31, .55); stroke-width: var(--ronova-rim-w, 7); stroke-linejoin: round; }
+.ronova-feather-halo { fill: none; stroke: rgba(164, 20, 34, .16); stroke-width: var(--ronova-halo-w, 18); }
 body[data-ds-dark-theme] .ronova-feather-body { fill: #170A0E; }
 body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(224, 86, 102, .5); }
 body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(196, 23, 43, .6); }
@@ -1082,15 +1085,19 @@ body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(196, 23, 43, .2); }
 
         const spawn = (part, initial) => {
           const roll = Math.random();
-          const size = roll < 0.5 ? 15 + Math.random() * 8
-            : roll < 0.86 ? 23 + Math.random() * 13
-              : 38 + Math.random() * 20;
+          const size = roll < 0.5 ? 18 + Math.random() * 8
+            : roll < 0.86 ? 26 + Math.random() * 14
+              : 40 + Math.random() * 20;
           const variant = FEATHER_VARIANTS[(Math.random() * FEATHER_VARIANTS.length) | 0];
 
           part.el.style.width = Math.round(size * variant.ratio) + 'px';
           part.el.style.height = Math.round(size) + 'px';
-          part.el.dataset.depth = size < 22 ? 'far' : size < 38 ? 'mid' : 'near';
-          part.el.style.filter = size < 16 ? 'blur(.4px)' : 'none';
+          part.el.dataset.depth = size < 26 ? 'far' : size < 40 ? 'mid' : 'near';
+          part.el.style.filter = size < 20 ? 'blur(.35px)' : 'none';
+          const unit = 246 / size;
+          part.el.style.setProperty('--ronova-rim-w', Math.min(20, Math.max(4, 1.15 * unit)).toFixed(1));
+          part.el.style.setProperty('--ronova-shaft-w', Math.min(16, Math.max(3, 0.9 * unit)).toFixed(1));
+          part.el.style.setProperty('--ronova-halo-w', Math.min(48, Math.max(10, 2.6 * unit)).toFixed(1));
           part.el.replaceChildren(makeSvg(variant));
 
           part.baseX = Math.random() * (width + 160) - 80;

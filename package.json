@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Ronova crimson-and-ash skin for the Harness Web UI",
+  "author": "iKode423 <ikodecc@163.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iKode423/dsh-ronova-theme.git"
+  },
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",

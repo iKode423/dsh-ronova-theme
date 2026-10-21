@@ -107,22 +107,22 @@ body[data-ds-dark-theme] {
 /* A faint crimson wash on the sidebar column and the conversation top bar. */
 [class*="sidebarCol"] {
   background:
-    radial-gradient(120% 60% at 0% 0%, rgba(138, 18, 32, .24) 0%, rgba(138, 18, 32, 0) 60%),
-    linear-gradient(180deg, rgba(138, 18, 32, .08) 0%, rgba(138, 18, 32, 0) 45%),
+    radial-gradient(120% 60% at 0% 0%, rgba(138, 18, 32, calc(.24 * var(--ronova-wash, 1))) 0%, rgba(138, 18, 32, 0) 60%),
+    linear-gradient(180deg, rgba(138, 18, 32, calc(.08 * var(--ronova-wash, 1))) 0%, rgba(138, 18, 32, 0) 45%),
     var(--dsw-specific-sidebar-fill) !important;
   border-right: none !important;
 }
 body[data-ds-dark-theme] [class*="sidebarCol"] {
   background:
-    radial-gradient(120% 60% at 0% 0%, rgba(196, 23, 43, .22) 0%, rgba(196, 23, 43, 0) 60%),
-    linear-gradient(180deg, rgba(196, 23, 43, .10) 0%, rgba(196, 23, 43, 0) 45%),
+    radial-gradient(120% 60% at 0% 0%, rgba(196, 23, 43, calc(.22 * var(--ronova-wash, 1))) 0%, rgba(196, 23, 43, 0) 60%),
+    linear-gradient(180deg, rgba(196, 23, 43, calc(.10 * var(--ronova-wash, 1))) 0%, rgba(196, 23, 43, 0) 45%),
     var(--dsw-specific-sidebar-fill) !important;
 }
 [class*="ST7X_W_header"] {
-  background-image: linear-gradient(180deg, rgba(138, 18, 32, .08) 0%, rgba(138, 18, 32, 0) 100%) !important;
+  background-image: linear-gradient(180deg, rgba(138, 18, 32, calc(.08 * var(--ronova-wash, 1))) 0%, rgba(138, 18, 32, 0) 100%) !important;
 }
 body[data-ds-dark-theme] [class*="ST7X_W_header"] {
-  background-image: linear-gradient(180deg, rgba(196, 23, 43, .12) 0%, rgba(196, 23, 43, 0) 100%) !important;
+  background-image: linear-gradient(180deg, rgba(196, 23, 43, calc(.12 * var(--ronova-wash, 1))) 0%, rgba(196, 23, 43, 0) 100%) !important;
 }
 
 /* Neutral plates read as grey on the tinted top bar; drop them inside the header. */
@@ -328,6 +328,52 @@ body[data-ds-dark-theme] ::-webkit-scrollbar-thumb {
   .ronova-sticker { transform: none; }
 }
 
+/* ---- Sidebar details: gold spine, quieter chrome ---- */
+[class*="sessionRow"][class*="selected"],
+[class*="searchResultRow"][class*="selected"] {
+  box-shadow: inset 2px 0 0 #BE8C47, 0 6px 14px -10px rgba(60, 8, 14, .8);
+}
+[class*="sessionRow"]:not([class*="selected"]):hover,
+[class*="searchResultRow"]:not([class*="selected"]):hover {
+  background: rgba(138, 18, 32, .06) !important;
+}
+body[data-ds-dark-theme] [class*="sessionRow"]:not([class*="selected"]):hover,
+body[data-ds-dark-theme] [class*="searchResultRow"]:not([class*="selected"]):hover {
+  background: rgba(196, 23, 43, .12) !important;
+}
+[class*="_7514NG_sectionLabel"] {
+  font-size: 10.5px !important;
+  letter-spacing: .16em !important;
+  color: #8B777A !important;
+}
+body[data-ds-dark-theme] [class*="_7514NG_sectionLabel"] {
+  color: #8A7174 !important;
+}
+[class*="jJkEga_time"] {
+  color: #A69295 !important;
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums;
+}
+body[data-ds-dark-theme] [class*="jJkEga_time"] {
+  color: #7E6669 !important;
+}
+[class*="jJkEga_iconButton"],
+[class*="_7514NG_iconButton"],
+[class*="_7514NG_searchButton"],
+[class*="_3WPZCG_iconButton"] {
+  color: #8B777A !important;
+}
+[class*="jJkEga_iconButton"]:hover,
+[class*="_7514NG_iconButton"]:hover,
+[class*="_7514NG_searchButton"]:hover {
+  color: #8A1220 !important;
+}
+body[data-ds-dark-theme] [class*="jJkEga_iconButton"]:hover,
+body[data-ds-dark-theme] [class*="_7514NG_iconButton"]:hover,
+body[data-ds-dark-theme] [class*="_7514NG_searchButton"]:hover {
+  color: #E05666 !important;
+}
+
 /* ---- Content layer: markdown text, code, tables, quotes ---- */
 [class*="markdown"] {
   --dsw-alias-markdown-inline-code: #F6E6E3;
@@ -517,6 +563,139 @@ body[data-ds-dark-theme] .yhfFVG_add:hover {
   .yhfFVG_primary { transition: none; }
 }
 
+/* ---- Hero lockup and the theme settings page ---- */
+.ronova-hero {
+  flex-direction: column;
+  gap: 12px;
+  height: auto !important;
+  overflow: visible;
+}
+.ronova-sticker-frame {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ronova-hero-caption {
+  font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .22em;
+  color: var(--dsw-alias-label-secondary);
+  text-indent: .22em;
+  white-space: nowrap;
+}
+html[data-ronova-stickers="off"] [data-chat-flow-kind="assistant-step"]::before,
+html[data-ronova-stickers="off"] [data-chat-flow-kind="user"]::after {
+  content: none !important;
+}
+html[data-ronova-stickers="off"] .ronova-mark,
+html[data-ronova-stickers="off"] .ronova-working {
+  display: none !important;
+}
+
+.ronova-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 2px 20px;
+  max-width: 680px;
+}
+.ronova-settings-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.ronova-settings-title {
+  font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--dsw-alias-label-primary);
+}
+.ronova-settings-sub {
+  font-family: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: .2em;
+  color: var(--ronova-gold);
+}
+.ronova-settings-rule {
+  height: 1px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, rgba(190, 140, 71, .55), rgba(190, 140, 71, 0));
+}
+.ronova-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: .5px solid var(--dsw-alias-border-l1);
+}
+.ronova-settings-label {
+  font-size: 14px;
+  color: var(--dsw-alias-label-primary);
+}
+.ronova-settings-hint {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--dsw-alias-label-secondary);
+}
+.ronova-settings-foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 14px;
+}
+.ronova-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--dsw-alias-bg-layer-2);
+}
+.ronova-seg button {
+  border: 0;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 18px;
+  padding: 4px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background .14s ease, color .14s ease;
+}
+.ronova-seg button:hover {
+  background: rgba(138, 18, 32, .08);
+  color: var(--dsw-alias-label-primary);
+}
+.ronova-seg button[aria-pressed="true"] {
+  background: #8A1220;
+  color: #FBF4F2;
+}
+.ronova-seg button[aria-pressed="true"]:hover {
+  background: #A3111F;
+}
+.ronova-reset {
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font-family: inherit;
+  font-size: 12.5px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .14s ease, color .14s ease;
+}
+.ronova-reset:hover {
+  border-color: var(--ronova-gold);
+  color: var(--dsw-alias-label-primary);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ronova-seg button, .ronova-reset { transition: none; }
+}
+
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],
 [data-chat-flow-kind="user"] {
@@ -616,23 +795,138 @@ body[data-ds-dark-theme] .yhfFVG_add:hover {
       return h('style', { 'data-ronova': 'skin', dangerouslySetInnerHTML: { __html: CSS } });
     }
 
+    const SETTINGS_KEY = 'ronova.settings.v1';
+    const SETTINGS_DEFAULTS = { wash: 1, stickers: 'on' };
+
+    function readSettings() {
+      try {
+        const raw = JSON.parse(window.localStorage.getItem(SETTINGS_KEY) || '{}');
+        return {
+          wash: Number(raw.wash) > 0 ? Number(raw.wash) : SETTINGS_DEFAULTS.wash,
+          stickers: raw.stickers === 'off' ? 'off' : 'on'
+        };
+      } catch (error) {
+        return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers };
+      }
+    }
+
+    function applySettings(next) {
+      const root = document.documentElement;
+      root.style.setProperty('--ronova-wash', String(next.wash));
+      if (next.stickers === 'off') root.setAttribute('data-ronova-stickers', 'off');
+      else root.removeAttribute('data-ronova-stickers');
+    }
+
+    function saveSettings(next) {
+      try {
+        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+      } catch (error) {
+        // Storage can be unavailable; the session keeps the in-memory value.
+      }
+    }
+
+    function DefaultSettings() {
+      return { wash: SETTINGS_DEFAULTS.wash, stickers: SETTINGS_DEFAULTS.stickers };
+    }
+
+    const WASH_OPTIONS = [
+      { value: 0.65, label: '淡' },
+      { value: 1, label: '标准' },
+      { value: 1.4, label: '浓' }
+    ];
+    const STICKER_OPTIONS = [
+      { value: 'on', label: '显示' },
+      { value: 'off', label: '隐藏' }
+    ];
+    const MODE_OPTIONS = [
+      { value: 'light', label: '浅色' },
+      { value: 'dark', label: '深色' }
+    ];
+
+    function Segment(props) {
+      return h('div', { className: 'ronova-seg', role: 'group', 'aria-label': props.label },
+        props.options.map((option) => h('button', {
+          key: String(option.value),
+          type: 'button',
+          'aria-pressed': String(option.value) === String(props.value),
+          onClick: () => props.onChange(option.value)
+        }, option.label))
+      );
+    }
+
+    function RonovaSettings() {
+      const [settings, setSettings] = React.useState(readSettings);
+      const mode = useMode();
+      React.useEffect(() => {
+        applySettings(settings);
+        saveSettings(settings);
+      }, [settings]);
+      const update = (patch) => setSettings((prev) => Object.assign({}, prev, patch));
+      const pickTheme = (next) => {
+        if (!themeService) return;
+        try {
+          themeService.setTheme(next);
+        } catch (error) {
+          // The shell can refuse preference writes; the appearance stays.
+        }
+      };
+      return h('div', { className: 'ronova-settings' },
+        h('div', { className: 'ronova-settings-head' },
+          h('div', { className: 'ronova-settings-title' }, '若娜瓦主题'),
+          h('div', { className: 'ronova-settings-sub' }, 'DEATH ARCHON · RONOVA'),
+          h('div', { className: 'ronova-settings-rule', 'aria-hidden': true })
+        ),
+        h('div', { className: 'ronova-settings-row' },
+          h('div', null,
+            h('div', { className: 'ronova-settings-label' }, '色浓度'),
+            h('div', { className: 'ronova-settings-hint' }, '侧栏与顶栏的酒红晕染强度')
+          ),
+          h(Segment, { label: '色浓度', value: settings.wash, options: WASH_OPTIONS, onChange: (value) => update({ wash: value }) })
+        ),
+        h('div', { className: 'ronova-settings-row' },
+          h('div', null,
+            h('div', { className: 'ronova-settings-label' }, '角色贴纸'),
+            h('div', { className: 'ronova-settings-hint' }, '对话两侧的 Q 版表情与等待动画')
+          ),
+          h(Segment, { label: '角色贴纸', value: settings.stickers, options: STICKER_OPTIONS, onChange: (value) => update({ stickers: value }) })
+        ),
+        h('div', { className: 'ronova-settings-row' },
+          h('div', null,
+            h('div', { className: 'ronova-settings-label' }, '明暗'),
+            h('div', { className: 'ronova-settings-hint' }, '也可以点侧栏的若娜瓦头像切换')
+          ),
+          h(Segment, { label: '明暗', value: mode, options: MODE_OPTIONS, onChange: pickTheme })
+        ),
+        h('div', { className: 'ronova-settings-foot' },
+          h('button', {
+            type: 'button',
+            className: 'ronova-reset',
+            onClick: () => setSettings(DefaultSettings())
+          }, '恢复默认')
+        )
+      );
+    }
+
     function HeroMark(props) {
       const [source] = React.useState(() => (Math.random() < 0.5 ? STICKER_GOLD : STICKER_FLAME));
       const requested = Number(props.size) > 0 ? Number(props.size) : 48;
       const size = Math.max(requested * 2, 80);
       return h('span', {
-        className: 'ronova-mark' + (props.className ? ' ' + props.className : ''),
-        style: { width: size, height: size }
+        className: 'ronova-mark ronova-hero' + (props.className ? ' ' + props.className : ''),
+        style: { width: size }
       },
-        h('span', { className: 'ronova-glow', 'aria-hidden': true }),
-        h('img', {
-          className: 'ronova-sticker',
-          src: source,
-          alt: '若娜瓦',
-          width: size,
-          height: size,
-          draggable: false
-        })
+        h('span', { className: 'ronova-sticker-frame', style: { width: size, height: size } },
+          h('span', { className: 'ronova-glow', 'aria-hidden': true }),
+          h('img', {
+            className: 'ronova-sticker',
+            src: source,
+            alt: '若娜瓦',
+            width: size,
+            height: size,
+            draggable: false
+          })
+        ),
+        h('span', { className: 'ronova-hero-caption' }, '死之执政 · RONOVA')
       );
     }
 
@@ -699,6 +993,7 @@ body[data-ds-dark-theme] .yhfFVG_add:hover {
         const theme = ctx.theme;
         themeService = theme;
         snapshot = theme.getTheme();
+        applySettings(readSettings());
 
         ctx.effect(() => theme.overrideTokens('@local/ronova', OVERRIDES));
         ctx.on('theme/change', (next) => {
@@ -751,6 +1046,13 @@ body[data-ds-dark-theme] .yhfFVG_add:hover {
           order: -20,
           label: '若娜瓦'
         }, SidebarAvatar));
+
+        safeInject('settings.section', () => ctx.slots.register({
+          name: 'settings.section',
+          id: 'ronova',
+          order: 12,
+          label: () => '若娜瓦'
+        }, RonovaSettings));
 
         safeInject('conversation.composer.dock', () => ctx.slots.register({
           name: 'conversation.composer.dock',

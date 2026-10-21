@@ -720,12 +720,20 @@ html[data-ronova-stickers="off"] .ronova-working {
   height: 100%;
   overflow: visible;
 }
-.ronova-feather-body { fill: #241016; }
-.ronova-feather-shaft { stroke: rgba(190, 140, 71, .5); stroke-width: .7; fill: none; }
-.ronova-feather-rim { fill: none; stroke: rgba(190, 140, 71, .38); stroke-width: .6; }
-body[data-ds-dark-theme] .ronova-feather-body { fill: #0A0406; }
-body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(190, 140, 71, .52); }
-body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); }
+.ronova-feather[data-depth="far"] { opacity: .13; }
+.ronova-feather[data-depth="mid"] { opacity: .18; }
+.ronova-feather[data-depth="near"] { opacity: .26; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="far"] { opacity: .20; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="mid"] { opacity: .27; }
+body[data-ds-dark-theme] .ronova-feather[data-depth="near"] { opacity: .36; }
+.ronova-feather-body { fill: #201014; }
+.ronova-feather-shaft { fill: none; stroke: rgba(190, 140, 71, .5); stroke-width: 5; stroke-linecap: round; }
+.ronova-feather-rim { fill: none; stroke: rgba(190, 140, 71, .42); stroke-width: 7; stroke-linejoin: round; }
+.ronova-feather-halo { fill: none; stroke: rgba(190, 140, 71, .10); stroke-width: 18; }
+body[data-ds-dark-theme] .ronova-feather-body { fill: #1A0E12; }
+body[data-ds-dark-theme] .ronova-feather-shaft { stroke: rgba(214, 170, 110, .6); }
+body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(214, 170, 110, .55); }
+body[data-ds-dark-theme] .ronova-feather-halo { stroke: rgba(190, 140, 71, .16); }
 
 /* Stickers in the gutters: assistant on the left, the account avatar on the right. */
 [data-chat-flow-kind="assistant-step"],
@@ -846,7 +854,7 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); 
     }
 
     const SETTINGS_KEY = 'ronova.settings.v1';
-    const SETTINGS_DEFAULTS = { wash: 1, stickers: 'on', feathers: 26 };
+    const SETTINGS_DEFAULTS = { wash: 1, stickers: 'on', feathers: 34 };
     const settingsListeners = new Set();
 
     function readSettings() {
@@ -908,9 +916,9 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); 
     ];
     const FEATHER_OPTIONS = [
       { value: 0, label: '关' },
-      { value: 14, label: '少' },
-      { value: 26, label: '标准' },
-      { value: 42, label: '多' }
+      { value: 20, label: '少' },
+      { value: 34, label: '标准' },
+      { value: 52, label: '多' }
     ];
 
     function Segment(props) {
@@ -984,22 +992,65 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); 
       );
     }
 
-    const FEATHER_SHAPES = {
-      long: {
-        viewBox: '0 0 44 96',
-        ratio: 0.46,
-        markup: '<path class="ronova-feather-body" d="M22 2C30 14 38 30 36 50C35 66 29 82 22 94C15 82 9 66 8 50C6 30 14 14 22 2Z"/>'
-          + '<path class="ronova-feather-shaft" d="M22 7L22 90"/>'
-          + '<path class="ronova-feather-rim" d="M22 2C30 14 38 30 36 50C35 66 29 82 22 94C15 82 9 66 8 50C6 30 14 14 22 2Z"/>'
-      },
-      down: {
-        viewBox: '0 0 26 50',
-        ratio: 0.52,
-        markup: '<path class="ronova-feather-body" d="M13 2C18 9 22 17 21 27C20 35 16 43 13 48C10 43 6 35 5 27C4 17 8 9 13 2Z"/>'
-          + '<path class="ronova-feather-shaft" d="M13 6L13 44"/>'
-          + '<path class="ronova-feather-rim" d="M13 2C18 9 22 17 21 27C20 35 16 43 13 48C10 43 6 35 5 27C4 17 8 9 13 2Z"/>'
+    // Feather silhouettes are generated once so every feather differs: a curved
+    // rachis, short angled barbs and an asymmetric vane (a leaf is symmetrical).
+    function buildFeather(seed) {
+      let state = seed >>> 0;
+      const rnd = () => {
+        state = (state * 1664525 + 1013904223) >>> 0;
+        return state / 4294967296;
+      };
+      const height = 240;
+      const baseX = 80;
+      const lean = (rnd() - 0.5) * 30;
+      const bow = (rnd() - 0.5) * 24;
+      const spine = (t) => baseX + Math.sin(t * Math.PI) * bow + t * lean;
+      const notchAt = 0.16 + rnd() * 0.12;
+      const widthAt = (t) => Math.pow(Math.sin(Math.pow(t, 0.9) * Math.PI), 0.9) * (44 + rnd() * 8);
+      const steps = 22;
+      const right = [];
+      const left = [];
+      for (let index = 0; index <= steps; index += 1) {
+        const t = index / steps;
+        const y = 10 + t * (height - 58);
+        const x = spine(t);
+        let width = widthAt(t);
+        if (Math.abs(t - notchAt) < 0.045) width *= 0.55;
+        const tip = index % 2 === 0;
+        const dip = tip ? 4 : 0;
+        right.push([x + width * (tip ? 1 : 0.72), y + dip]);
+        left.push([x - width * (tip ? 0.46 : 0.3), y + dip]);
       }
-    };
+      const body = [[spine(0), 6]]
+        .concat(right.slice(1))
+        .concat([[spine(1), height - 48]])
+        .concat(left.slice(1).reverse());
+      const shaft = [];
+      for (let index = 0; index <= 18; index += 1) {
+        const t = index / 18;
+        shaft.push([spine(t), 4 + t * (height - 8)]);
+      }
+      const toPath = (points) => points.map((point, index) => (index ? 'L' : 'M') + point[0].toFixed(1) + ' ' + point[1].toFixed(1)).join('');
+      const bodyPath = toPath(body) + 'Z';
+      const shaftPath = toPath(shaft);
+      let minX = Infinity;
+      let maxX = -Infinity;
+      body.forEach((point) => {
+        if (point[0] < minX) minX = point[0];
+        if (point[0] > maxX) maxX = point[0];
+      });
+      const viewWidth = Math.ceil(maxX - minX + 8);
+      return {
+        viewBox: (minX - 4).toFixed(0) + ' 0 ' + viewWidth + ' 246',
+        ratio: viewWidth / 246,
+        markup: '<path class="ronova-feather-halo" d="' + bodyPath + '"/>'
+          + '<path class="ronova-feather-body" d="' + bodyPath + '"/>'
+          + '<path class="ronova-feather-shaft" d="' + shaftPath + '"/>'
+          + '<path class="ronova-feather-rim" d="' + bodyPath + '"/>'
+      };
+    }
+
+    const FEATHER_VARIANTS = [1009, 2027, 3041, 4057, 5077, 6091, 7103, 8117, 9133].map(buildFeather);
 
     function FeatherLayer() {
       const hostRef = React.useRef(null);
@@ -1021,12 +1072,11 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); 
         let height = window.innerHeight;
         const parts = [];
 
-        const makeSvg = (shape) => {
-          const spec = FEATHER_SHAPES[shape];
+        const makeSvg = (variant) => {
           const svg = document.createElementNS(SVG_NS, 'svg');
-          svg.setAttribute('viewBox', spec.viewBox);
+          svg.setAttribute('viewBox', variant.viewBox);
           svg.setAttribute('aria-hidden', 'true');
-          svg.innerHTML = spec.markup;
+          svg.innerHTML = variant.markup;
           return svg;
         };
 
@@ -1035,17 +1085,13 @@ body[data-ds-dark-theme] .ronova-feather-rim { stroke: rgba(190, 140, 71, .38); 
           const size = roll < 0.5 ? 12 + Math.random() * 8
             : roll < 0.86 ? 20 + Math.random() * 12
               : 40 + Math.random() * 16;
-          const shape = size < 22 ? 'down' : 'long';
-          const spec = FEATHER_SHAPES[shape];
-          const opacity = size < 22 ? 0.13 + Math.random() * 0.05
-            : size < 36 ? 0.18 + Math.random() * 0.05
-              : 0.24 + Math.random() * 0.06;
+          const variant = FEATHER_VARIANTS[(Math.random() * FEATHER_VARIANTS.length) | 0];
 
-          part.el.style.width = Math.round(size * spec.ratio) + 'px';
+          part.el.style.width = Math.round(size * variant.ratio) + 'px';
           part.el.style.height = Math.round(size) + 'px';
-          part.el.style.opacity = opacity.toFixed(2);
-          part.el.style.filter = size < 16 ? 'blur(.5px)' : 'none';
-          part.el.replaceChildren(makeSvg(shape));
+          part.el.dataset.depth = size < 22 ? 'far' : size < 38 ? 'mid' : 'near';
+          part.el.style.filter = size < 16 ? 'blur(.4px)' : 'none';
+          part.el.replaceChildren(makeSvg(variant));
 
           part.baseX = Math.random() * (width + 160) - 80;
           part.y = initial ? Math.random() * (height + 120) - 60 : -80 - Math.random() * 140;

@@ -696,6 +696,16 @@ html[data-ronova-stickers="off"] .ronova-working {
   .ronova-seg button, .ronova-reset { transition: none; }
 }
 
+/* ---- User message bubble: warm wine-tinted surface instead of neutral grey ---- */
+[data-chat-flow-kind="user"] [class*="bubble"] {
+  background: #F6E4E0 !important;
+  box-shadow: 0 6px 18px -16px rgba(90, 20, 30, .45) !important;
+}
+body[data-ds-dark-theme] [data-chat-flow-kind="user"] [class*="bubble"] {
+  background: #2A181C !important;
+  box-shadow: 0 8px 22px -18px rgba(0, 0, 0, .9) !important;
+}
+
 /* ---- Falling feathers: a frame-wide, non-interactive overlay ---- */
 .ronova-feathers {
   position: fixed;

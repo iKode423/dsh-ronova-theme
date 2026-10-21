@@ -351,14 +351,14 @@ body[data-ds-dark-theme] [class*="markdown"] :not(pre) > code {
 .md-code-block {
   background: #FBF2EE !important;
   border: 1px solid rgba(190, 140, 71, .20) !important;
-  border-radius: 10px !important;
-  box-shadow: inset 2px 0 0 rgba(190, 140, 71, .5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(90, 20, 30, .05) !important;
   overflow: hidden;
 }
 body[data-ds-dark-theme] .md-code-block {
   background: #190D10 !important;
   border-color: rgba(190, 140, 71, .14) !important;
-  box-shadow: inset 2px 0 0 rgba(190, 140, 71, .35) !important;
+  box-shadow: none !important;
 }
 .md-code-block pre {
   margin: 0 !important;
@@ -372,12 +372,20 @@ body[data-ds-dark-theme] .md-code-block {
   font-size: .92em;
 }
 .md-code-block [data-code-block-banner] {
-  background: rgba(190, 140, 71, .08) !important;
-  border-bottom: 1px solid rgba(190, 140, 71, .18);
+  background: rgba(190, 140, 71, .07) !important;
+  border-bottom: 1px solid rgba(190, 140, 71, .16) !important;
+}
+.md-code-block [data-code-block-banner] ._language_1pq26_30 {
+  color: #8A6A47 !important;
+  font-size: 11px !important;
+  letter-spacing: .06em;
 }
 body[data-ds-dark-theme] .md-code-block [data-code-block-banner] {
-  background: rgba(190, 140, 71, .06) !important;
-  border-bottom-color: rgba(190, 140, 71, .14);
+  background: rgba(190, 140, 71, .05) !important;
+  border-bottom-color: rgba(190, 140, 71, .12) !important;
+}
+body[data-ds-dark-theme] .md-code-block [data-code-block-banner] ._language_1pq26_30 {
+  color: #C2A57C !important;
 }
 
 [class*="markdown"] table {

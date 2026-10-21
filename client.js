@@ -82,11 +82,11 @@ body[data-ds-dark-theme] {
   --dsw-focus-ring-color: #D93B4C !important;
   --dsw-alias-label-primary-bluish: #F3EBEB !important;
   --dsw-alias-label-caption: #8A7174 !important;
-  --dsw-alias-bg-module-platform: #2B191D !important;
-  --dsw-alias-border-l4: #4A2C31 !important;
-  --dsw-static-neutral-bluish-400: #6A3B41 !important;
-  --dsw-specific-sidebar-nav-item-active: rgba(196, 23, 43, .22) !important;
-  --dsw-specific-sidebar-nav-item-hover: rgba(196, 23, 43, .12) !important;
+  --dsw-alias-bg-module-platform: #3A2228 !important;
+  --dsw-alias-border-l4: #5C363D !important;
+  --dsw-static-neutral-bluish-400: #A33B48 !important;
+  --dsw-specific-sidebar-nav-item-active: rgba(196, 23, 43, .34) !important;
+  --dsw-specific-sidebar-nav-item-hover: rgba(196, 23, 43, .18) !important;
 }
 
 /* Solid wine blocks: the selected row, the active tab and the primary action. */

@@ -350,24 +350,24 @@ body[data-ds-dark-theme] [class*="markdown"] :not(pre) > code {
 
 .md-code-block {
   background: #FBF2EE !important;
-  border: 1px solid rgba(190, 140, 71, .26) !important;
+  border: 1px solid rgba(190, 140, 71, .20) !important;
   border-radius: 10px !important;
   box-shadow: inset 2px 0 0 rgba(190, 140, 71, .5) !important;
   overflow: hidden;
 }
 body[data-ds-dark-theme] .md-code-block {
   background: #190D10 !important;
-  border-color: rgba(190, 140, 71, .18) !important;
+  border-color: rgba(190, 140, 71, .14) !important;
   box-shadow: inset 2px 0 0 rgba(190, 140, 71, .35) !important;
 }
 .md-code-block pre {
   margin: 0 !important;
-  padding: 11px 0 13px !important;
+  padding: 11px 18px 13px 21px !important;
   background: transparent !important;
   line-height: 1.62 !important;
 }
 .md-code-block pre > code {
-  padding: 0 16px !important;
+  padding: 0 !important;
   background: transparent !important;
   font-size: .92em;
 }
@@ -452,32 +452,6 @@ body[data-ds-dark-theme] [class*="markdown"] li::marker {
 }
 
 /* ---- Warm the neutral chrome: changed-file cards, menus, toasts ---- */
-.ztjrea_card {
-  box-shadow: inset 0 0 0 .5px rgba(190, 140, 71, .32) !important;
-}
-.ztjrea_card[data-changed-files="true"] .ztjrea_tile {
-  background: rgba(138, 18, 32, .10) !important;
-  color: #8A1220 !important;
-}
-.ztjrea_card[data-changed-files="true"] .ztjrea_tile svg,
-.ztjrea_card[data-changed-files="true"] .ztjrea_tile svg * {
-  fill: currentColor;
-}
-body[data-ds-dark-theme] .ztjrea_card[data-changed-files="true"] .ztjrea_tile {
-  background: rgba(196, 23, 43, .20) !important;
-  color: #F2CBD0 !important;
-}
-
-[role="menu"],
-[role="listbox"],
-[role="dialog"][aria-modal="true"] {
-  box-shadow: 0 0 0 1px rgba(190, 140, 71, .22), 0 22px 48px -26px rgba(60, 8, 14, .55) !important;
-}
-body[data-ds-dark-theme] [role="menu"],
-body[data-ds-dark-theme] [role="listbox"],
-body[data-ds-dark-theme] [role="dialog"][aria-modal="true"] {
-  box-shadow: 0 0 0 1px rgba(190, 140, 71, .18), 0 26px 56px -26px rgba(0, 0, 0, .85) !important;
-}
 [role="menuitem"]:hover,
 [role="menuitem"]:focus-visible,
 [role="option"]:hover,
@@ -489,10 +463,6 @@ body[data-ds-dark-theme] [role="menuitem"]:focus-visible,
 body[data-ds-dark-theme] [role="option"]:hover,
 body[data-ds-dark-theme] [role="option"][aria-selected="true"] {
   background-color: rgba(196, 23, 43, .18) !important;
-}
-
-[class*="_toast_"] {
-  box-shadow: 0 0 0 1px rgba(190, 140, 71, .30), 0 18px 40px -22px rgba(60, 8, 14, .5) !important;
 }
 
 /* ---- Composer: parchment card, gold hairline, ember send button ---- */
@@ -511,10 +481,15 @@ body[data-ds-dark-theme] .yhfFVG_input::before {
   color: #8A7174 !important;
 }
 .yhfFVG_add {
-  color: #8B777A !important;
+  color: #6E5457 !important;
+  border-radius: 8px;
+}
+body[data-ds-dark-theme] .yhfFVG_add {
+  color: #A99093 !important;
 }
 .yhfFVG_add:hover {
   color: #8A1220 !important;
+  background: rgba(138, 18, 32, .07) !important;
 }
 body[data-ds-dark-theme] .yhfFVG_add:hover {
   color: #E05666 !important;
